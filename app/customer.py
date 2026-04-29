@@ -1,4 +1,5 @@
 import math
+from datetime import datetime
 
 from app.car import Car
 from app.shop import Shop
@@ -10,7 +11,7 @@ class Customer:
             self,
             name: str,
             product_cart: dict,
-            location: list,
+            location: list[int | float],
             money: int | float,
             car: dict
     ) -> None:
@@ -43,3 +44,20 @@ class Customer:
                 fuel_price, self.distance_to_shop(other)) * 2
                ),
             2)
+
+    def receipt(self, shop: Shop) -> None:
+        print(
+            f"Date: {datetime(
+                2021, 4, 1, 12, 33, 41
+            ).strftime('%m/%d/%Y %H:%M:%S')}"
+        )
+        print(f"Thanks, {self.name}, for your purchase!\nYou have bought:")
+        for product, product_price in zip(self.product_cart, shop.products):
+            print(
+                f"{product.number} "
+                f"{product.name}s for {product * product_price} dollars"
+            )
+        print(
+            f"Total cost is {self.price_for_products(shop)} dollars\n"
+            f"See you again!\n"
+        )

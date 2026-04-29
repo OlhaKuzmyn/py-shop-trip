@@ -1,5 +1,4 @@
 import json
-from datetime import datetime
 
 from app.shop import Shop
 from app.customer import Customer
@@ -11,26 +10,6 @@ with open("app/config.json", "r") as config_file:
 fuel_price, customers, shops = config.values()
 customers_objects = [Customer(**customer) for customer in customers]
 shops_objects = [Shop(**shop) for shop in shops]
-
-
-def receipt(customer: Customer, shop_name: str) -> None:
-    shop = [shop for shop in shops_objects if shop.name == shop_name][0]
-    print(
-        f"Date: {datetime(
-            2021, 4, 1, 12, 33, 41
-        ).strftime('%m/%d/%Y %H:%M:%S')}"
-    )
-    print(f"Thanks, {customer.name}, for your purchase!\nYou have bought:")
-    for product, product_price in zip(customer.product_cart, shop.products):
-        print(
-            f"{product.number} "
-            f"{product.name}s for {product * product_price} dollars"
-        )
-
-    print(
-        f"Total cost is {customer.price_for_products(shop)} dollars\n"
-        f"See you again!\n"
-    )
 
 
 def shop_trip() -> None:
@@ -46,10 +25,18 @@ def shop_trip() -> None:
             )
 
         if customer.money >= min(trips_costs):
-            chosen_shop = trips_costs[min(trips_costs)]
-            print(f"{customer.name} rides to {chosen_shop}\n")
-            receipt(customer, chosen_shop)
+            chosen_shop_name = trips_costs[min(trips_costs)]
+            home_location = customer.location
+            print(f"{customer.name} rides to {chosen_shop_name}\n")
+            chosen_shop = list(
+                filter(
+                    lambda shop_: shop_.name == chosen_shop_name, shops_objects
+                )
+            )[0]
+            customer.location = chosen_shop.location
+            customer.receipt(chosen_shop)
             print(f"{customer.name} rides home")
+            customer.location = home_location
             customer.money -= min(trips_costs)
             print(f"{customer.name} now has {customer.money} dollars\n")
         else:
