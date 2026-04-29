@@ -1,5 +1,5 @@
 import math
-from datetime import datetime
+import datetime
 
 from app.car import Car
 from app.shop import Shop
@@ -47,9 +47,7 @@ class Customer:
 
     def receipt(self, shop: Shop) -> None:
         print(
-            f"Date: {datetime(
-                2021, 4, 1, 12, 33, 41
-            ).strftime('%m/%d/%Y %H:%M:%S')}"
+            f"Date: {datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S')}"
         )
         print(f"Thanks, {self.name}, for your purchase!\nYou have bought:")
         for product, product_price in zip(self.product_cart, shop.products):
